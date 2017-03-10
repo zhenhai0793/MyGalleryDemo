@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Scroller;
 
 /**
  * Created by zhenhai.fzh on 17/3/10.
@@ -20,17 +21,21 @@ public class MyImageView extends ImageView {
     private int firstY;
     private float firstRawX;
     private float firstRawY;
+    private Scroller mScroller;
 
     public MyImageView(Context context) {
         super(context);
+        mScroller = new Scroller(context);
     }
 
     public MyImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        mScroller = new Scroller(context);
     }
 
     public MyImageView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        mScroller = new Scroller(context);
     }
 
     @Override
@@ -72,7 +77,9 @@ public class MyImageView extends ImageView {
                 //调用layout方法来重新放置它的位置
 //                layout(getLeft() + offX, getTop() + offY,
 //                        getRight() + offX, getBottom() + offY);
-                ((View)getParent()).scrollBy(0, -offY);
+//                ((View)getParent()).scrollBy(0, -offY);
+                View parent = (View)getParent();
+                mScroller.startScroll(parent.getScrollX(), parent.getScrollY(), 0, -offY, 500);
                 updateMyAlpha(firstRawY);
                 break;
             }
@@ -89,5 +96,14 @@ public class MyImageView extends ImageView {
         float alpha = 1-moveHeight/height*factor;
         Log.d(TAG, "height:"+height+", firstRawY:"+firstRawY+", curRawY:"+curRawY+", moveHeight:"+moveHeight+", alpha:"+alpha);
         setAlpha(alpha);
+    }
+
+    @Override
+    public void computeScroll() {
+        super.computeScroll();
+        if(mScroller.computeScrollOffset()) {
+            ((View)getParent()).scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
+        }
+        invalidate();
     }
 }
