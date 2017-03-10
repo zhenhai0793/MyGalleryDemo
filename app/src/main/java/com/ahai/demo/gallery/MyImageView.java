@@ -16,12 +16,14 @@ public class MyImageView extends ImageView {
 
     private String TAG = "MyImageView";
 
-    private int lastX;
-    private int lastY;
-    private int firstY;
-    private float firstRawX;
-    private float firstRawY;
+    private int downY;
+    private float downRawY;
+    private float upRawY;
     private Scroller mScroller;
+    private long moveTime;
+    private long upTime;
+    private float moveY;
+    private float upY;
 
     public MyImageView(Context context) {
         super(context);
@@ -40,31 +42,29 @@ public class MyImageView extends ImageView {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        //获取到手指处的横坐标和纵坐标
-        int x = (int) event.getX();
         int y = (int) event.getY();
-        float rawX = event.getRawX();
         float rawY = event.getRawY();
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
 
-                lastX = x;
-                lastY = y;
-                firstY = y;
-                firstRawX = rawX;
-                firstRawY = rawY;
+                downY = y;
+                downRawY = rawY;
+
+                moveTime = event.getEventTime();
+                moveY = event.getY();
 
                 break;
 
             case MotionEvent.ACTION_MOVE: {
-                //计算移动的距离
-//                int offX = x - lastX;
+
+                moveTime = event.getEventTime();
+                moveY = event.getY();
+
                 int offX = 0;
-                int offY = y - lastY;
-                //调用layout方法来重新放置它的位置
-                layout(getLeft() + offX, getTop() + offY,
-                        getRight() + offX, getBottom() + offY);
+                int offY = y - downY;
+
+                layout(getLeft() + offX, getTop() + offY, getRight() + offX, getBottom() + offY);
 
                 updateMyAlpha(rawY);
 
@@ -72,29 +72,50 @@ public class MyImageView extends ImageView {
             }
 
             case MotionEvent.ACTION_UP: {
-                int offX = 0;
-                int offY = (int)(firstRawY - rawY);
-                //调用layout方法来重新放置它的位置
-//                layout(getLeft() + offX, getTop() + offY,
-//                        getRight() + offX, getBottom() + offY);
-//                ((View)getParent()).scrollBy(0, -offY);
-                View parent = (View)getParent();
-                mScroller.startScroll(parent.getScrollX(), parent.getScrollY(), 0, -offY, 500);
-                updateMyAlpha(firstRawY);
+
+                upRawY = rawY;
+                int offY = (int)(downRawY - upRawY);
+
+                if(offY < 0) {
+                    // 向上滑回
+                    scrollBack(offY);
+                } else {
+                    upTime = event.getEventTime();
+                    upY = event.getY();
+
+                    long dt = upTime - moveTime;
+                    float dy = upY - moveY;
+                    float vy = dy / dt;
+                    Log.d(TAG, "fling dt:"+dt+", dy:"+dy+", vy:"+vy+", bottomY:"+getBottom());
+
+                    if(vy > 0.1) {
+                        // 向上滑出
+                        View parent = (View) getParent();
+                        mScroller.startScroll(parent.getScrollX(), parent.getScrollY(), 0, getBottom(), 500);
+                    } else {
+                        // 向下滑回
+                        scrollBack(offY);
+                    }
+                }
                 break;
             }
         }
         return true;
-//        return super.onTouchEvent(event);
+    }
+
+    private void scrollBack(int offY) {
+        View parent = (View) getParent();
+        mScroller.startScroll(parent.getScrollX(), parent.getScrollY(), 0, -offY, 500);
+        updateMyAlpha(downRawY);
     }
 
     private void updateMyAlpha(float curRawY) {
-        if(curRawY > firstRawY) return;
+        if(curRawY > downRawY) return;
         float height = getHeight();
-        float moveHeight = Math.abs(curRawY - firstRawY);
+        float moveHeight = Math.abs(curRawY - downRawY);
         int factor = 1;
         float alpha = 1-moveHeight/height*factor;
-        Log.d(TAG, "height:"+height+", firstRawY:"+firstRawY+", curRawY:"+curRawY+", moveHeight:"+moveHeight+", alpha:"+alpha);
+        Log.d(TAG, "height:"+height+", downRawY:"+downRawY+", curRawY:"+curRawY+", moveHeight:"+moveHeight+", alpha:"+alpha);
         setAlpha(alpha);
     }
 
