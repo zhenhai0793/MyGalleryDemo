@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.ImageView;
 
 /**
@@ -69,8 +70,9 @@ public class MyImageView extends ImageView {
                 int offX = 0;
                 int offY = (int)(firstRawY - rawY);
                 //调用layout方法来重新放置它的位置
-                layout(getLeft() + offX, getTop() + offY,
-                        getRight() + offX, getBottom() + offY);
+//                layout(getLeft() + offX, getTop() + offY,
+//                        getRight() + offX, getBottom() + offY);
+                ((View)getParent()).scrollBy(0, -offY);
                 updateMyAlpha(firstRawY);
                 break;
             }
