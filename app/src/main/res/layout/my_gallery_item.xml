@@ -1,37 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
-              android:paddingLeft="20dp"
-              android:paddingRight="20dp"
-              android:background="#22000000"
+              android:background="@android:color/transparent"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
-    <ImageView
-        android:id="@+id/image_view"
+    <View
+        android:id="@+id/title_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerCrop"
+        android:layout_height="60dp"
+        android:background="@android:color/transparent"
+    />
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@color/title_bgcolor"
         android:layout_weight="1"
-    />
-    <TextView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="随心所欲的五月"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:textColor="@android:color/white"
-        android:gravity="center"
-        android:padding="3dp"
-        android:layout_marginTop="6dp"
-    />
-    <TextView
+        android:layout_height="match_parent">
+        <ImageView
+            android:id="@+id/image_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:layout_weight="1"
+        />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="随心所欲的五月"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:gravity="center"
+            android:padding="3dp"
+            android:layout_marginTop="6dp"
+        />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="优酷最新上架的片子"
+            android:textSize="16sp"
+            android:textColor="@android:color/white"
+            android:gravity="center"
+            android:padding="3dp"
+            android:layout_marginBottom="6dp"
+        />
+    </LinearLayout>
+    <RelativeLayout
+        android:id="@+id/bottom_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="优酷最新上架的片子"
-        android:textSize="20sp"
-        android:textColor="@android:color/white"
-        android:gravity="center"
-        android:padding="3dp"
-        android:layout_marginBottom="6dp"
+        android:layout_height="80dp"
+        android:background="@android:color/transparent"
     />
 </LinearLayout>

@@ -4,35 +4,39 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
+    <ImageView
+        android:id="@+id/main_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+    />
+
+    <Gallery
+        android:id="@+id/gallery"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+    />
+
     <TextView
         android:id="@+id/title_view"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:gravity="center"
         android:layout_alignParentTop="true"
-        android:background="@android:color/white"
+        android:background="@color/title_bgcolor"
         android:text="@string/gallery_demo"
-        android:textColor="@android:color/black"
+        android:textColor="@android:color/white"
         android:textSize="20sp"
     />
 
     <RelativeLayout
         android:id="@+id/bottom_view"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="80dp"
         android:layout_alignParentBottom="true"
-        android:background="@android:color/darker_gray"
+        android:background="@android:color/transparent"
     >
 
     </RelativeLayout>
 
-    <Gallery
-        android:id="@+id/gallery"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/bottom_view"
-        android:layout_below="@id/title_view"
-    >
-
-    </Gallery>
 </RelativeLayout>

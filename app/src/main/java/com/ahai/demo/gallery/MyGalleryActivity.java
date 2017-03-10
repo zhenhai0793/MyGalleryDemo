@@ -1,6 +1,8 @@
 package com.ahai.demo.gallery;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Gallery;
 import android.widget.ImageView;
+
+import net.qiujuer.genius.blur.StackBlur;
 
 import nsouth.jonas.android.R;
 
@@ -20,9 +24,10 @@ public class MyGalleryActivity extends Activity {
 
     String TAG = "MyGalleryActivity";
     Gallery mGallery;
+    ImageView mImageView;
     int[] mImageArray = new int[]{
             R.drawable.image1,
-            R.drawable.image2,
+//            R.drawable.image2,
             R.drawable.image3,
             R.drawable.image4,
             R.drawable.image5,
@@ -38,6 +43,10 @@ public class MyGalleryActivity extends Activity {
         setContentView(R.layout.my_gallery_activity);
         mGallery = (Gallery) findViewById(R.id.gallery);
         mGallery.setAdapter(new GalleryAdapter());
+        mImageView = (ImageView) findViewById(R.id.main_bg);
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.image2);
+        Bitmap blurBitmap = StackBlur.blur(bitmap, 30, false);
+        mImageView.setImageBitmap(blurBitmap);
     }
 
     class GalleryAdapter extends BaseAdapter {
@@ -64,6 +73,7 @@ public class MyGalleryActivity extends Activity {
             View rootView = LayoutInflater.from(getBaseContext()).inflate(R.layout.my_gallery_item, null);
             rootView.setLayoutParams(new Gallery.LayoutParams(parent.getWidth()-120, parent.getHeight()));
             ImageView imageView = (ImageView)rootView.findViewById(R.id.image_view);
+
             imageView.setImageResource(mImageArray[position]);
             return rootView;
         }
