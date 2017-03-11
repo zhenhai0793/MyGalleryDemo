@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
-import android.view.View;
 import android.widget.Gallery;
 
 /**
@@ -80,8 +79,6 @@ public class MyGallery extends Gallery {
                 break;
             }
         }
-//        boolean result = super.onInterceptTouchEvent(event);
-//        Log.d(TAG, "onInterceptTouchEvent result:"+result);
         return bIntercept;
     }
 

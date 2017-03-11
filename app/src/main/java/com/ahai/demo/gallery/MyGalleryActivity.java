@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -14,6 +15,8 @@ import android.widget.Gallery;
 import android.widget.ImageView;
 
 import net.qiujuer.genius.blur.StackBlur;
+
+import java.util.LinkedList;
 
 import nsouth.jonas.android.R;
 
@@ -27,21 +30,24 @@ public class MyGalleryActivity extends Activity {
     Gallery mGallery;
     GalleryAdapter mGalleryAdapter;
     ImageView mImageView;
-    int[] mImageArray = new int[]{
-            R.drawable.image1,
-//            R.drawable.image2,
-            R.drawable.image3,
-            R.drawable.image4,
-            R.drawable.image5,
-            R.drawable.image6,
-            R.drawable.image7,
-            R.drawable.image8,
-            R.drawable.image9
-    };
+    LinkedList<Integer> list = new LinkedList();
+    Handler mHandler = new Handler();
+
+    public void initList() {
+        list.add(R.drawable.image1);
+        list.add(R.drawable.image3);
+        list.add(R.drawable.image4);
+        list.add(R.drawable.image5);
+        list.add(R.drawable.image6);
+        list.add(R.drawable.image7);
+        list.add(R.drawable.image8);
+        list.add(R.drawable.image9);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initList();
         setContentView(R.layout.my_gallery_activity);
         mGallery = (Gallery) findViewById(R.id.gallery);
         mGalleryAdapter = new GalleryAdapter();
@@ -78,16 +84,20 @@ public class MyGalleryActivity extends Activity {
         mGalleryAdapter.notifyDataSetChanged();
     }
 
+    public interface OnItemListener {
+        void onItemRemoved();
+    }
+
     class GalleryAdapter extends BaseAdapter {
 
         @Override
         public int getCount() {
-            return mImageArray.length;
+            return list.size();
         }
 
         @Override
         public Object getItem(int position) {
-            return mImageArray[position];
+            return list.get(position);
         }
 
         @Override
@@ -96,25 +106,27 @@ public class MyGalleryActivity extends Activity {
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(final int position, View convertView, ViewGroup parent) {
             Log.d(TAG, "getView.parent: " + parent.getClass().getName());
             Log.d(TAG, "parent.width:"+parent.getWidth()+", parent.height:"+parent.getHeight());
             View rootView = LayoutInflater.from(getBaseContext()).inflate(R.layout.my_gallery_item, null);
             rootView.setLayoutParams(new Gallery.LayoutParams(parent.getWidth()-120, parent.getHeight()));
             ImageView imageView = (ImageView)rootView.findViewById(R.id.image_view);
-            imageView.setImageResource(mImageArray[position]);
+            imageView.setImageResource(list.get(position));
+            MyLinearLayout myLinearLayout = (MyLinearLayout)rootView.findViewById(R.id.my_linear_layout);
+            myLinearLayout.setOnItemListener(new OnItemListener() {
+                @Override
+                public void onItemRemoved() {
+                    list.remove(position);
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            notifyDataSetChanged();
+                        }
+                    }, 500);
+                }
+            });
             return rootView;
         }
-
-//        @Override
-//        public View getView(int position, View convertView, ViewGroup parent) {
-//            Log.d(TAG, "getView.parent: " + parent.getClass().getName());
-//            Log.d(TAG, "parent.width:"+parent.getWidth()+", parent.height:"+parent.getHeight());
-//            ImageView imageView = new ImageView(getBaseContext());
-//            imageView.setLayoutParams(new Gallery.LayoutParams(parent.getWidth()-120, parent.getHeight()));
-//            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-//            imageView.setImageResource(mImageArray[position]);
-//            return imageView;
-//        }
     }
 }

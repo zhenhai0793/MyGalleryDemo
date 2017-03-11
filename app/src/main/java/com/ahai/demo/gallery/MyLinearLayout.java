@@ -5,7 +5,6 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewParent;
 import android.widget.LinearLayout;
 import android.widget.Scroller;
 
@@ -29,6 +28,7 @@ public class MyLinearLayout extends LinearLayout {
     private float upY;
     private boolean isMove;
     private int dragOrientation;
+    private MyGalleryActivity.OnItemListener onItemListener;
 
     public MyLinearLayout(Context context) {
         super(context);
@@ -43,6 +43,10 @@ public class MyLinearLayout extends LinearLayout {
     public MyLinearLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mScroller = new Scroller(context);
+    }
+
+    public void setOnItemListener(MyGalleryActivity.OnItemListener onItemListener) {
+        this.onItemListener = onItemListener;
     }
 
     @Override
@@ -124,6 +128,9 @@ public class MyLinearLayout extends LinearLayout {
                         // 向上滑出
                         View parent = (View) getParent();
                         mScroller.startScroll(parent.getScrollX(), parent.getScrollY(), 0, getBottom(), 500);
+                        if(onItemListener != null) {
+                            onItemListener.onItemRemoved();
+                        }
                     } else {
                         // 向下滑回
                         scrollBack(offY);
