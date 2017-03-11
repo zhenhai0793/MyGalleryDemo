@@ -133,8 +133,8 @@ public class MyLinearLayout extends LinearLayout {
             }
         }
 
-//        boolean result = !isMove || dragOrientation == VERTICAL;
-        boolean result = isMove && dragOrientation == VERTICAL;
+        boolean result = !isMove || dragOrientation == VERTICAL;
+//        boolean result = isMove && dragOrientation == VERTICAL;
         Log.d(TAG, "onTouchEvent result:"+result);
         return result;
     }
