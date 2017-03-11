@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -24,6 +25,7 @@ public class MyGalleryActivity extends Activity {
 
     String TAG = "MyGalleryActivity";
     Gallery mGallery;
+    GalleryAdapter mGalleryAdapter;
     ImageView mImageView;
     int[] mImageArray = new int[]{
             R.drawable.image1,
@@ -42,11 +44,38 @@ public class MyGalleryActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.my_gallery_activity);
         mGallery = (Gallery) findViewById(R.id.gallery);
-        mGallery.setAdapter(new GalleryAdapter());
+        mGalleryAdapter = new GalleryAdapter();
+        mGallery.setAdapter(mGalleryAdapter);
         mImageView = (ImageView) findViewById(R.id.main_bg);
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.image2);
         Bitmap blurBitmap = StackBlur.blur(bitmap, 30, false);
         mImageView.setImageBitmap(blurBitmap);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        boolean result = super.onTouchEvent(event);
+        String action = "";
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                action = "action_down";
+                break;
+            case MotionEvent.ACTION_MOVE:
+                action = "action_move";
+                break;
+            case MotionEvent.ACTION_UP:
+                action = "action_up";
+                break;
+        }
+        Log.d(TAG, "onTouchEvent result:"+result+", type:"+action);
+        return result;
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        Log.d(TAG, "onWindowFocusChanged hasFocus:"+hasFocus);
+        mGalleryAdapter.notifyDataSetChanged();
     }
 
     class GalleryAdapter extends BaseAdapter {

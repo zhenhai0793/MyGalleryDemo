@@ -5,6 +5,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewParent;
 import android.widget.LinearLayout;
 import android.widget.Scroller;
 
@@ -16,7 +17,9 @@ public class MyLinearLayout extends LinearLayout {
 
     private String TAG = "MyLinearLayout";
 
+    private int downX;
     private int downY;
+    private float downRawX;
     private float downRawY;
     private float upRawY;
     private Scroller mScroller;
@@ -24,6 +27,8 @@ public class MyLinearLayout extends LinearLayout {
     private long upTime;
     private float moveY;
     private float upY;
+    private boolean isMove;
+    private int dragOrientation;
 
     public MyLinearLayout(Context context) {
         super(context);
@@ -42,17 +47,25 @@ public class MyLinearLayout extends LinearLayout {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        int x = (int) event.getX();
         int y = (int) event.getY();
+        float rawX = event.getRawX();
         float rawY = event.getRawY();
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
 
+                downX = x;
                 downY = y;
+                downRawX = rawX;
                 downRawY = rawY;
 
                 moveTime = event.getEventTime();
                 moveY = event.getY();
+
+                isMove = false;
+
+                Log.d(TAG, "action_down isMove:"+isMove);
 
                 break;
 
@@ -60,6 +73,25 @@ public class MyLinearLayout extends LinearLayout {
 
                 moveTime = event.getEventTime();
                 moveY = event.getY();
+
+                if(!isMove) {
+                    float dx = Math.abs(rawX - downRawX);
+                    float dy = Math.abs(rawY - downRawY);
+                    Log.d(TAG, "beginMove dx:" + dx+", dy:"+dy);
+                    if(dx == 0 && dy == 0) {
+                        break;
+                    } else {
+                        isMove = true;
+                        if (dx > dy) {
+                            dragOrientation = HORIZONTAL;
+                            break;
+                        } else {
+                            dragOrientation = VERTICAL;
+                        }
+                    }
+                }
+
+                Log.d(TAG, "action_move isMove:"+isMove+", dragOrientation:"+dragOrientation);
 
                 int offX = 0;
                 int offY = y - downY;
@@ -100,7 +132,18 @@ public class MyLinearLayout extends LinearLayout {
                 break;
             }
         }
-        return true;
+
+//        boolean result = !isMove || dragOrientation == VERTICAL;
+        boolean result = isMove && dragOrientation == VERTICAL;
+        Log.d(TAG, "onTouchEvent result:"+result);
+        return result;
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        boolean result = super.onInterceptTouchEvent(ev);
+        Log.d(TAG, "onInterceptTouchEvent result:"+result);
+        return result;
     }
 
     private void scrollBack(int offY) {
