@@ -73,7 +73,6 @@ public class MyGalleryActivity extends Activity {
             View rootView = LayoutInflater.from(getBaseContext()).inflate(R.layout.my_gallery_item, null);
             rootView.setLayoutParams(new Gallery.LayoutParams(parent.getWidth()-120, parent.getHeight()));
             ImageView imageView = (ImageView)rootView.findViewById(R.id.image_view);
-
             imageView.setImageResource(mImageArray[position]);
             return rootView;
         }

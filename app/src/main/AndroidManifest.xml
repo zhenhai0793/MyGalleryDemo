@@ -10,7 +10,7 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name">
         <activity
-            android:name="com.ahai.demo.gallery.MyFlingActivity"
+            android:name="com.ahai.demo.gallery.MyGalleryActivity"
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Light.NoTitleBar">
             <intent-filter>
