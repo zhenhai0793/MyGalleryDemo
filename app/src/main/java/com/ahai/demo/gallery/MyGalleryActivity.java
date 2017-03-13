@@ -21,7 +21,7 @@ import net.qiujuer.genius.blur.StackBlur;
 
 import java.util.LinkedList;
 
-import nsouth.jonas.android.R;
+import com.ahai.demo.mycinema.R;
 
 /**
  * Created by zhenhai.fzh on 17/3/10.

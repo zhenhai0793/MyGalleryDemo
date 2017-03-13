@@ -3,7 +3,7 @@ package com.ahai.demo.gallery;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.KeyEvent;
+//import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.widget.Gallery;
 
@@ -102,9 +102,9 @@ public class MyGallery extends Gallery {
         return result;
     }
 
-    private boolean isScrollingLeft(MotionEvent e1, MotionEvent e2) {
+    /*private boolean isScrollingLeft(MotionEvent e1, MotionEvent e2) {
         return e2.getX() > e1.getX();
-    }
+    }*/
 
     /*@Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {

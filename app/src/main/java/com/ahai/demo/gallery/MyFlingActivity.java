@@ -6,7 +6,7 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 
-import nsouth.jonas.android.R;
+import com.ahai.demo.mycinema.R;
 
 public class MyFlingActivity extends Activity {
 

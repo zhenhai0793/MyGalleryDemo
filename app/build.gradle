@@ -5,7 +5,7 @@ android {
     buildToolsVersion "23.0.3"
 
     defaultConfig {
-        applicationId "nsouth.jonas.android"
+        applicationId "com.ahai.demo.mycinema"
         minSdkVersion 15
         targetSdkVersion 19
     }
