@@ -106,7 +106,7 @@ public class MyGallery extends Gallery {
         return e2.getX() > e1.getX();
     }
 
-    @Override
+    /*@Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
         int kEvent;
         if (isScrollingLeft(e1, e2)) {
@@ -119,5 +119,5 @@ public class MyGallery extends Gallery {
 
         onKeyDown(kEvent, null);
         return true;
-    }
+    }*/
 }

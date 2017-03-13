@@ -1,5 +1,8 @@
 package com.ahai.demo.gallery;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -85,7 +88,8 @@ public class MyGalleryActivity extends Activity {
     }
 
     public interface OnItemListener {
-        void onItemRemoved();
+        void onItemRemoved(); // 下滑删除item
+        void onItemJumpDetail(); // 上滑item跳转到详情页
     }
 
     class GalleryAdapter extends BaseAdapter {
@@ -106,24 +110,77 @@ public class MyGalleryActivity extends Activity {
         }
 
         @Override
-        public View getView(final int position, View convertView, ViewGroup parent) {
-            Log.d(TAG, "getView.parent: " + parent.getClass().getName());
-            Log.d(TAG, "parent.width:"+parent.getWidth()+", parent.height:"+parent.getHeight());
-            View rootView = LayoutInflater.from(getBaseContext()).inflate(R.layout.my_gallery_item, null);
-            rootView.setLayoutParams(new Gallery.LayoutParams(parent.getWidth()-120, parent.getHeight()));
+        public View getView(final int position, View convertView, final ViewGroup parent) {
+            if(convertView == null) {
+                Log.d(TAG, "getView.parent: " + parent.getClass().getName());
+                Log.d(TAG, "parent.width:" + parent.getWidth() + ", parent.height:" + parent.getHeight());
+                convertView = LayoutInflater.from(getBaseContext()).inflate(R.layout.my_gallery_item, null);
+            }
+            final View rootView = convertView;
+            rootView.setLayoutParams(new Gallery.LayoutParams(parent.getWidth() - 120, parent.getHeight()));
             ImageView imageView = (ImageView)rootView.findViewById(R.id.image_view);
             imageView.setImageResource(list.get(position));
             MyLinearLayout myLinearLayout = (MyLinearLayout)rootView.findViewById(R.id.my_linear_layout);
             myLinearLayout.setOnItemListener(new OnItemListener() {
                 @Override
                 public void onItemRemoved() {
-                    list.remove(position);
-                    mHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            notifyDataSetChanged();
+                    // 方法一:简单实现删除之后0.5秒刷新adapter
+                    /*{
+                        list.remove(position);
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                notifyDataSetChanged();
+                            }
+                        }, 500);
+                    }*/
+                    // 方法二:使用ValueAnimator实现平滑移动
+                    {
+                        int start = parent.getWidth()-120;
+                        int end = 0;
+                        ValueAnimator animator = ValueAnimator.ofInt(start, end);
+                        animator.addUpdateListener(
+                                new ValueAnimator.AnimatorUpdateListener() {
+                                    @Override
+                                    public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                                        int value = (Integer) valueAnimator.getAnimatedValue();
+                                        ViewGroup.LayoutParams layoutParams = rootView.getLayoutParams();
+                                        layoutParams.width = value;
+                                        rootView.setLayoutParams(layoutParams);
+                                    }
+                                }
+                        );
+                        animator.addListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                //list.remove(position);
+                                //notifyDataSetChanged();
+                            }
+                        });
+                        animator.start();
+                    }
+                    // 方法三:调用gallery.setSelection方法
+                    /*{
+                        Gallery gallery = (Gallery) parent;
+                        if(position != getCount() - 1) {
+                            gallery.setSelection(position + 1);
+                        } else {
+                            if(position != 0) {
+                                gallery.setSelection(position - 1);
+                            }
                         }
-                    }, 500);
+                        list.remove(position);
+                        notifyDataSetChanged();
+                    }*/
+                }
+
+                @Override
+                public void onItemJumpDetail() {
+                    Gallery.LayoutParams layoutParams = (Gallery.LayoutParams) rootView.getLayoutParams();
+                    if(layoutParams.width != parent.getWidth()) {
+                        layoutParams.width += 120;
+                        rootView.setLayoutParams(layoutParams);
+                    }
                 }
             });
             return rootView;

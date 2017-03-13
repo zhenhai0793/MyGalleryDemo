@@ -1,6 +1,7 @@
 package com.ahai.demo.gallery;
 
 import android.content.Context;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -100,9 +101,17 @@ public class MyLinearLayout extends LinearLayout {
                 int offX = 0;
                 int offY = y - downY;
 
+                Log.d(TAG, "downY:"+downY+", moveY:"+y+", offY:"+offY);
+
                 layout(getLeft() + offX, getTop() + offY, getRight() + offX, getBottom() + offY);
 
                 updateMyAlpha(rawY);
+
+                if(offY < 0) {
+                    if(onItemListener != null) {
+                        onItemListener.onItemJumpDetail();
+                    }
+                }
 
                 break;
             }
@@ -128,9 +137,15 @@ public class MyLinearLayout extends LinearLayout {
                         // 向上滑出
                         View parent = (View) getParent();
                         mScroller.startScroll(parent.getScrollX(), parent.getScrollY(), 0, getBottom(), 500);
-                        if(onItemListener != null) {
-                            onItemListener.onItemRemoved();
-                        }
+                        getHandler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                setVisibility(View.INVISIBLE);
+                                if(onItemListener != null) {
+                                    onItemListener.onItemRemoved();
+                                }
+                            }
+                        }, 500);
                     } else {
                         // 向下滑回
                         scrollBack(offY);
