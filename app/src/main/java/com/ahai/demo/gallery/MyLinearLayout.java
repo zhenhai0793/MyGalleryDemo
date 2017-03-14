@@ -108,7 +108,7 @@ public class MyLinearLayout extends LinearLayout {
 
                 if(offY < 0) {
                     if(onItemListener != null) {
-                        onItemListener.onItemJumpDetail();
+                        // onItemListener.onItemJumpDetail();
                     }
                 }
 
@@ -171,6 +171,11 @@ public class MyLinearLayout extends LinearLayout {
         View parent = (View) getParent();
         mScroller.startScroll(parent.getScrollX(), parent.getScrollY(), 0, -offY, 500);
         updateMyAlpha(downRawY);
+    }
+
+    public void doScrollX(int offset) {
+        View parent = (View) getParent();
+        mScroller.startScroll(parent.getScrollX(), parent.getScrollY(), offset, 0, 500);
     }
 
     private void updateMyAlpha(float curRawY) {

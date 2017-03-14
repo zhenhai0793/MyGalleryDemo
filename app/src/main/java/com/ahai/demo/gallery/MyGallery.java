@@ -5,6 +5,8 @@ import android.util.AttributeSet;
 import android.util.Log;
 //import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.view.View;
+import android.view.animation.Transformation;
 import android.widget.Gallery;
 
 /**
@@ -100,6 +102,32 @@ public class MyGallery extends Gallery {
         }
         Log.d(TAG, "onTouchEvent result:"+result+", type:"+action);
         return result;
+    }
+
+    @Override
+    protected boolean getChildStaticTransformation(View child, Transformation t) {
+        int left = child.getLeft();
+        int paddingLeft = child.getPaddingLeft();
+        int paddingRight = child.getPaddingRight();
+        int right = child.getRight();
+        int width = child.getWidth();
+        String id = "@"+child.hashCode();
+        boolean bool = super.getChildStaticTransformation(child, t);
+        Log.d(TAG, "ChildInfo id:"+id+", left:"+left+", right:"+right
+                +", width:"+width+", paddingLeft:"+paddingLeft+", paddingRight:"+paddingRight+", bool:"+bool);
+        return bool;
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        Log.d(TAG, "onMeasure");
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        super.onLayout(changed, l, t, r, b);
+        Log.d(TAG, "onLayout changed:"+changed+", l:"+l+", r:"+r+", t:"+t+", b:"+b);
     }
 
     /*private boolean isScrollingLeft(MotionEvent e1, MotionEvent e2) {
